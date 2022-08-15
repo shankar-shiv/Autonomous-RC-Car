@@ -4,29 +4,32 @@
 ***** Cite the author if you are referencing this code.
 */
 
-
 // serial print variable type
-void types(String a) {
+void types(String a)
+{
   Serial.println("it's a String");
 }
-void types(int a) {
+void types(int a)
+{
   Serial.println("it's an int");
 }
-void types(char* a) {
+void types(char *a)
+{
   Serial.println("it's a char*");
 }
-void types(float a) {
+void types(float a)
+{
   Serial.println("it's a float");
 }
-void types(bool a) {
+void types(bool a)
+{
   Serial.println("it's a bool");
 }
 
-
 #include "ESP8266WiFi.h"
 
-const char* ssid = "DilipAsha_2.4GHz";
-const char* password = "Aish280102";
+const char *ssid = "";
+const char *password = "";
 
 /* ***** PIN declarations *****
     PIN_IN1 and PIN_IN2 controls Left motor of L298N.
@@ -62,11 +65,13 @@ void left(int time_delay);
 void forward(int time_delay);
 void reverse(int time_delay);
 
-void setup() {
+void setup()
+{
 
   Serial.begin(115200);
   WiFi.begin(ssid, password);
-  while (WiFi.status() != WL_CONNECTED) {
+  while (WiFi.status() != WL_CONNECTED)
+  {
     delay(1000);
     Serial.println("Connecting..");
   }
@@ -89,14 +94,17 @@ void setup() {
   digitalWrite(PIN_IN2, LOW);
   digitalWrite(PIN_IN3, LOW);
   digitalWrite(PIN_IN4, LOW);
-
 }
 
-void loop() {
+void loop()
+{
   WiFiClient client = wifiServer.available();
-  if (client) {
-    while (client.connected()) {
-      while (client.available() > 0) {
+  if (client)
+  {
+    while (client.connected())
+    {
+      while (client.available() > 0)
+      {
         char c = client.read();
         Serial.println(c);
         send_command(c, time_delay);
@@ -104,17 +112,20 @@ void loop() {
     }
     client.stop();
     Serial.println("Client disconnected");
-  } else {
+  }
+  else
+  {
     reset_all();
   }
 }
 
-void right(int time_delay) {
-  analogWrite(PIN_ENA, 150);  // control motor A
-  analogWrite(PIN_ENB, 180);  // control motor B
+void right(int time_delay)
+{
+  analogWrite(PIN_ENA, 150); // control motor A
+  analogWrite(PIN_ENB, 180); // control motor B
 
   // Right Motor
-  digitalWrite(PIN_IN1, HIGH);  // Forward motion
+  digitalWrite(PIN_IN1, HIGH); // Forward motion
   digitalWrite(PIN_IN2, LOW);
 
   // Left Motor
@@ -123,12 +134,13 @@ void right(int time_delay) {
   Serial.println("RIGHT");
 }
 
-void left(int time_delay) {
-  analogWrite(PIN_ENA, 180);  // control motor A
-  analogWrite(PIN_ENB, 150);  // control motor B
+void left(int time_delay)
+{
+  analogWrite(PIN_ENA, 180); // control motor A
+  analogWrite(PIN_ENB, 150); // control motor B
 
   // Right Motor
-  digitalWrite(PIN_IN1, HIGH);  // Forward motion
+  digitalWrite(PIN_IN1, HIGH); // Forward motion
   digitalWrite(PIN_IN2, LOW);
 
   // Left Motor
@@ -137,11 +149,12 @@ void left(int time_delay) {
   Serial.println("RIGHT");
 }
 
-void forward(int time_delay) {
-  analogWrite(PIN_ENA, 150);  // control motor A
-  analogWrite(PIN_ENB, 150);  // control motor B
+void forward(int time_delay)
+{
+  analogWrite(PIN_ENA, 150); // control motor A
+  analogWrite(PIN_ENB, 150); // control motor B
 
-  digitalWrite(PIN_IN1, HIGH);  // Forward motion
+  digitalWrite(PIN_IN1, HIGH); // Forward motion
   digitalWrite(PIN_IN2, LOW);
 
   digitalWrite(PIN_IN3, HIGH);
@@ -149,11 +162,12 @@ void forward(int time_delay) {
   Serial.println("FORWARD");
 }
 
-void reverse(int time_delay) {
-  analogWrite(PIN_ENA, 150);  // control motor A
-  analogWrite(PIN_ENB, 150);  // control motor B
+void reverse(int time_delay)
+{
+  analogWrite(PIN_ENA, 150); // control motor A
+  analogWrite(PIN_ENB, 150); // control motor B
 
-  digitalWrite(PIN_IN1, LOW);  // Backward motion
+  digitalWrite(PIN_IN1, LOW); // Backward motion
   digitalWrite(PIN_IN2, HIGH);
 
   digitalWrite(PIN_IN3, LOW);
@@ -161,9 +175,10 @@ void reverse(int time_delay) {
   Serial.println("BACKWARD");
 }
 
-void reset_all() {
-  analogWrite(PIN_ENA, 0);  // control motor A
-  analogWrite(PIN_ENB, 0);  // control motor B
+void reset_all()
+{
+  analogWrite(PIN_ENA, 0); // control motor A
+  analogWrite(PIN_ENB, 0); // control motor B
 
   digitalWrite(PIN_IN1, LOW);
   digitalWrite(PIN_IN2, LOW);
@@ -171,23 +186,37 @@ void reset_all() {
   digitalWrite(PIN_IN4, LOW);
 }
 
-void send_command(int command, int time_delay) {
-  switch (command) {
+void send_command(int command, int time_delay)
+{
+  switch (command)
+  {
 
-    //reset command
-    case '5': reset_all(); break;
+  // reset command
+  case '5':
+    reset_all();
+    break;
 
-    // single command
-    case '3': forward(time_delay); break;
-    case '4': reverse(time_delay); break;
-    case '2': right(time_delay); break;
-    case '1': left(time_delay); break;
-    default: reset_all();
+  // single command
+  case '3':
+    forward(time_delay);
+    break;
+  case '4':
+    reverse(time_delay);
+    break;
+  case '2':
+    right(time_delay);
+    break;
+  case '1':
+    left(time_delay);
+    break;
+  default:
+    reset_all();
   }
 }
 
 // This function lets you control spinning direction of motors
-void directionControl() {
+void directionControl()
+{
   // Set motors to maximum speed
   // For PWM maximum possible values are 0 to 255
   //  analogWrite(enA, 255);

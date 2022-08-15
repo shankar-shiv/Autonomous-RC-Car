@@ -5,11 +5,11 @@
 
 #ifndef STASSID
 #define STASSID "your-ssid"
-#define STAPSK  "your-password"
+#define STAPSK "your-password"
 #endif
 
-const char* ssid = "DilipAsha_2.4GHz";
-const char* password = "Aish280102";
+const char *ssid = "";
+const char *password = "";
 
 ESP8266WebServer server(80);
 
@@ -38,13 +38,14 @@ int PIN_ENB = 16;
 int PIN_IN3 = 13;
 int PIN_IN4 = 15;
 
-void right() {
+void right()
+{
   server.send(200, "text/plain", "Right!\r\n");
-  analogWrite(PIN_ENA, 160);  // control motor A
-  analogWrite(PIN_ENB, 230);  // control motor B
+  analogWrite(PIN_ENA, 160); // control motor A
+  analogWrite(PIN_ENB, 230); // control motor B
 
   // Right Motor
-  digitalWrite(PIN_IN1, HIGH);  // Forward motion
+  digitalWrite(PIN_IN1, HIGH); // Forward motion
   digitalWrite(PIN_IN2, LOW);
 
   // Left Motor
@@ -53,14 +54,15 @@ void right() {
   Serial.println("RIGHT");
 }
 
-void left() {
+void left()
+{
   server.send(200, "text/plain", "Left!\r\n");
-  
-  analogWrite(PIN_ENA, 23 0);  // control motor A
+
+  analogWrite(PIN_ENA, 23 0); // control motor A
   analogWrite(PIN_ENB, 160);  // control motor B
 
   // Right Motor
-  digitalWrite(PIN_IN1, HIGH);  // Forward motion
+  digitalWrite(PIN_IN1, HIGH); // Forward motion
   digitalWrite(PIN_IN2, LOW);
 
   // Left Motor
@@ -69,13 +71,14 @@ void left() {
   Serial.println("LEFT");
 }
 
-void forward() {
+void forward()
+{
   server.send(200, "text/plain", "Forward!\r\n");
-  
-  analogWrite(PIN_ENA, 175);  // control motor A
-  analogWrite(PIN_ENB, 175);  // control motor B
 
-  digitalWrite(PIN_IN1, HIGH);  // Forward motion
+  analogWrite(PIN_ENA, 175); // control motor A
+  analogWrite(PIN_ENB, 175); // control motor B
+
+  digitalWrite(PIN_IN1, HIGH); // Forward motion
   digitalWrite(PIN_IN2, LOW);
 
   digitalWrite(PIN_IN3, HIGH);
@@ -83,13 +86,14 @@ void forward() {
   Serial.println("FORWARD");
 }
 
-void backward() {
+void backward()
+{
   server.send(200, "text/plain", "Backward!\r\n");
-  
-  analogWrite(PIN_ENA, 160);  // control motor A
-  analogWrite(PIN_ENB, 160);  // control motor B
 
-  digitalWrite(PIN_IN1, LOW);  // Backward motion
+  analogWrite(PIN_ENA, 160); // control motor A
+  analogWrite(PIN_ENB, 160); // control motor B
+
+  digitalWrite(PIN_IN1, LOW); // Backward motion
   digitalWrite(PIN_IN2, HIGH);
 
   digitalWrite(PIN_IN3, LOW);
@@ -97,27 +101,30 @@ void backward() {
   Serial.println("BACKWARD");
 }
 
-void reset_all() {
+void reset_all()
+{
   server.send(200, "text/plain", "Stop!\r\n");
-  
-  analogWrite(PIN_ENA, 0);  // control motor A
-  analogWrite(PIN_ENB, 0);  // control motor B
+
+  analogWrite(PIN_ENA, 0); // control motor A
+  analogWrite(PIN_ENB, 0); // control motor B
 
   digitalWrite(PIN_IN1, LOW);
   digitalWrite(PIN_IN2, LOW);
   digitalWrite(PIN_IN3, LOW);
   digitalWrite(PIN_IN4, LOW);
-  
+
   Serial.println("STOP");
 }
 
-void handleRoot() {
+void handleRoot()
+{
   digitalWrite(led, 1);
   server.send(200, "text/plain", "hello from esp8266!\r\n");
   digitalWrite(led, 0);
 }
 
-void handleNotFound() {
+void handleNotFound()
+{
   digitalWrite(led, 1);
   String message = "File Not Found\n\n";
   message += "URI: ";
@@ -127,14 +134,16 @@ void handleNotFound() {
   message += "\nArguments: ";
   message += server.args();
   message += "\n";
-  for (uint8_t i = 0; i < server.args(); i++) {
+  for (uint8_t i = 0; i < server.args(); i++)
+  {
     message += " " + server.argName(i) + ": " + server.arg(i) + "\n";
   }
   server.send(404, "text/plain", message);
   digitalWrite(led, 0);
 }
 
-void setup(void) {
+void setup(void)
+{
   pinMode(led, OUTPUT);
   digitalWrite(led, 0);
   Serial.begin(115200);
@@ -143,7 +152,8 @@ void setup(void) {
   Serial.println("");
 
   // Wait for connection
-  while (WiFi.status() != WL_CONNECTED) {
+  while (WiFi.status() != WL_CONNECTED)
+  {
     delay(500);
     Serial.print(".");
   }
@@ -153,7 +163,8 @@ void setup(void) {
   Serial.print("IP address: ");
   Serial.println(WiFi.localIP());
 
-  if (MDNS.begin("esp8266")) {
+  if (MDNS.begin("esp8266"))
+  {
     Serial.println("MDNS responder started");
   }
 
@@ -174,17 +185,17 @@ void setup(void) {
 
   server.on("/", handleRoot);
 
-  server.on("/inline", []() {
-    server.send(200, "text/plain", "this works as well");
-  });
+  server.on("/inline", []()
+            { server.send(200, "text/plain", "this works as well"); });
 
   server.on("/left", left);
   server.on("/right", right);
   server.on("/forward", forward);
   server.on("/backward", backward); // do not name as reverse, reset_all
   server.on("/reset_all", reset_all);
-  
-  server.on("/gif", []() {
+
+  server.on("/gif", []()
+            {
     static const uint8_t gif[] PROGMEM = {
       0x47, 0x49, 0x46, 0x38, 0x37, 0x61, 0x10, 0x00, 0x10, 0x00, 0x80, 0x01,
       0x00, 0x00, 0x00, 0x00, 0xff, 0xff, 0xff, 0x2c, 0x00, 0x00, 0x00, 0x00,
@@ -198,8 +209,7 @@ void setup(void) {
     gif_colored[16] = millis() % 256;
     gif_colored[17] = millis() % 256;
     gif_colored[18] = millis() % 256;
-    server.send(200, "image/gif", gif_colored, sizeof(gif_colored));
-  });
+    server.send(200, "image/gif", gif_colored, sizeof(gif_colored)); });
 
   server.onNotFound(handleNotFound);
 
@@ -207,7 +217,8 @@ void setup(void) {
   Serial.println("HTTP server started");
 }
 
-void loop(void) {
+void loop(void)
+{
   server.handleClient();
   MDNS.update();
 }
